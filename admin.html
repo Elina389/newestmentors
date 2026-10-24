@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin · Mentor Matching</title>
+    <link rel="stylesheet" href="sjsu-theme.css">
+    <link rel="stylesheet" href="mentor-system.css">
+</head>
+<body>
+    <div class="container admin">
+        <div class="header">
+            <h1>Admin: Mentor Matches</h1>
+            <p>Top mentor matches for every student who submitted the survey</p>
+        </div>
+
+        <div class="admin-body">
+            <form id="adminLogin" class="admin-login">
+                <label for="adminKey">Admin key</label>
+                <div class="admin-login-row">
+                    <input type="password" id="adminKey" autocomplete="current-password" placeholder="The ADMIN_KEY you set on the Lambda">
+                    <button type="submit" class="btn-primary">Load data</button>
+                </div>
+                <small id="adminHint" class="muted"></small>
+            </form>
+
+            <div id="adminStatus" class="form-error hidden" role="alert"></div>
+
+            <div id="adminSummary" class="admin-summary hidden">
+                <div class="stat"><span id="statStudents">0</span> students</div>
+                <div class="stat"><span id="statMentors">0</span> mentors</div>
+                <button class="btn-secondary" onclick="downloadCsv()">Download matches (CSV)</button>
+            </div>
+
+            <div id="studentList"></div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="matching-algorithm.js"></script>
+    <script src="api.js"></script>
+    <script>
+        const engine = new MatchingSystem();
+        let lastResults = [];
+
+        function esc(v) {
+            return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function setStatus(msg) {
+            const box = document.getElementById('adminStatus');
+            box.textContent = msg || '';
+            box.classList.toggle('hidden', !msg);
+        }
+
+        // Demo mode hint
+        if (!Api.enabled()) {
+            document.getElementById('adminHint').textContent =
+                'Demo mode (no API_URL in config.js): showing data saved in this browser only. Any key works.';
+        }
+
+        // Remember the key for this tab only
+        try {
+            const saved = sessionStorage.getItem('adminKey');
+            if (saved) document.getElementById('adminKey').value = saved;
+        } catch (e) { /* storage blocked */ }
+
+        document.getElementById('adminLogin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setStatus('');
+            const key = document.getElementById('adminKey').value.trim();
+            try { sessionStorage.setItem('adminKey', key); } catch (err) { /* ignore */ }
+
+            let students, mentors;
+            try {
+                if (Api.enabled()) {
+                    const data = await Api.adminData(key);
+                    students = data.students;
+                    mentors = data.mentors;
+                } else {
+                    students = engine.getAllStudents();
+                    mentors = engine.getAllMentors();
+                }
+            } catch (err) {
+                setStatus(`Couldn't load data: ${err.message}`);
+                return;
+            }
+
+            engine.setStudents(students);
+            engine.setMentors(mentors);
+            render(students, mentors);
+        });
+
+        function render(students, mentors) {
+            document.getElementById('adminSummary').classList.remove('hidden');
+            document.getElementById('statStudents').textContent = students.length;
+            document.getElementById('statMentors').textContent = mentors.length;
+
+            const listEl = document.getElementById('studentList');
+            listEl.innerHTML = '';
+            lastResults = [];
+
+            if (students.length === 0) {
+                listEl.innerHTML = '<p class="muted-center">No student submissions yet.</p>';
+                return;
+            }
+
+            // Newest first
+            const sorted = [...students].sort((a, b) =>
+                String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
+
+            sorted.forEach(student => {
+                const matches = engine.findMatches(student, 3);
+                lastResults.push({ student, matches });
+
+                const section = document.createElement('div');
+                section.className = 'student-block';
+                section.innerHTML = `
+                    <div class="student-head">
+                        <div>
+                            <div class="match-name">${esc(student.name)}</div>
+                            <div class="muted">${esc(student.major)} · ${esc(student.year)} ·
+                                <a href="mailto:${esc(student.email)}">${esc(student.email)}</a></div>
+                        </div>
+                    </div>
+                    <p class="student-passion"><strong>Passion:</strong> ${esc(student.passion)}</p>
+                    ${student.goals ? `<p class="muted"><strong>Goals:</strong> ${esc(student.goals)}</p>` : ''}
+                    ${student.challenges ? `<p class="muted"><strong>Challenges:</strong> ${esc(student.challenges)}</p>` : ''}
+                    <div class="match-rows">
+                        ${matches.length === 0 ? '<p class="muted">No mentors yet.</p>' : matches.map(m => `
+                            <div class="match-row">
+                                <span class="match-score">${m.match.percentage}%</span>
+                                <div class="match-row-body">
+                                    <strong>${esc(m.mentor.name)}</strong> · ${esc(m.mentor.title)} at ${esc(m.mentor.company)}
+                                    · <a href="mailto:${esc(m.mentor.email)}">${esc(m.mentor.email)}</a>
+                                    <div class="muted">${m.match.details.map(esc).join(' • ') || 'No overlap found'}</div>
+                                    <div class="bars">
+                                        ${bar('Passion', m.match.breakdown.passion, 40)}
+                                        ${bar('Major', m.match.breakdown.major, 30)}
+                                        ${bar('Style', m.match.breakdown.style, 15)}
+                                        ${bar('Availability', m.match.breakdown.availability, 10)}
+                                    </div>
+                                </div>
+                            </div>`).join('')}
+                    </div>
+                `;
+                listEl.appendChild(section);
+            });
+        }
+
+        function bar(label, value, max) {
+            const pct = Math.round(((value || 0) / max) * 100);
+            return `<div class="bar" title="${label}: ${value || 0} of ${max}">
+                        <span class="bar-label">${label}</span>
+                        <span class="bar-track"><span class="bar-fill" style="width:${pct}%"></span></span>
+                        <span class="bar-value">${value || 0}/${max}</span>
+                    </div>`;
+        }
+
+        function csvCell(v) {
+            const s = String(v ?? '');
+            return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+        }
+
+        function downloadCsv() {
+            const rows = [['Student', 'Student email', 'Major', 'Rank', 'Mentor', 'Mentor email', 'Match %', 'Why']];
+            lastResults.forEach(({ student, matches }) => {
+                matches.forEach((m, i) => rows.push([
+                    student.name, student.email, student.major, i + 1,
+                    m.mentor.name, m.mentor.email, m.match.percentage, m.match.details.join(' | ')
+                ]));
+            });
+            const csv = rows.map(r => r.map(csvCell).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `mentor-matches-${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+    </script>
+</body>
+</html>

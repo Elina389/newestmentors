@@ -1,0 +1,20 @@
+/* Official SJSU brand HEX values are marked. Other tokens are application suggestions. */
+:root {
+  --sjsu-blue: #0055A2;   /* official */
+  --sjsu-gold: #E5A823;   /* official */
+  --sjsu-gray: #939597;   /* official */
+  --sjsu-light-gray: #D2D2D2; /* official */
+  --sjsu-dark-gray: #666666;  /* official */
+  --app-background: #FFFFFF;
+  --app-surface: #F5F7FA;
+  --app-ink: #242B33;
+  --app-blue-dark: #133761; /* official print palette secondary */
+}
+body { background: var(--app-background); color: var(--app-ink); }
+header, nav { background: var(--sjsu-blue); color: white; }
+button.primary { background: var(--sjsu-blue); color: white; }
+button.primary:hover { background: var(--app-blue-dark); }
+.card { background: var(--app-surface); border: 1px solid var(--sjsu-light-gray); }
+.accent { border-left: 4px solid var(--sjsu-gold); }
+a { color: var(--sjsu-blue); }
+:focus-visible { outline: 3px solid var(--sjsu-gold); outline-offset: 2px; }

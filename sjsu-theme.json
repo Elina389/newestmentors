@@ -1,0 +1,15 @@
+{
+  "official": {
+    "blue": "#0055A2",
+    "gold": "#E5A823",
+    "gray": "#939597",
+    "lightGray": "#D2D2D2",
+    "darkGray": "#666666"
+  },
+  "suggested": {
+    "background": "#FFFFFF",
+    "surface": "#F5F7FA",
+    "ink": "#242B33",
+    "blueDark": "#133761"
+  }
+}

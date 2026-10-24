@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJSU Mentor-Mentee Matching System</title>
+    <link rel="stylesheet" href="sjsu-theme.css">
+    <link rel="stylesheet" href="mentor-system.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 SJSU Mentor-Mentee Matching System</h1>
+            <p>Connecting students with mentors for success</p>
+        </div>
+
+        <!-- Role Selection Screen -->
+        <div id="roleSelection" class="role-selection">
+            <h2>Welcome! Please select your role:</h2>
+            <div class="role-buttons">
+                <button class="role-btn" onclick="showStudentSurvey()">
+                    <h3>👨‍🎓 I'm a Student</h3>
+                    <p>Looking for guidance and mentorship</p>
+                </button>
+                <button class="role-btn" onclick="showMentorSurvey()">
+                    <h3>👨‍🏫 I'm a Mentor</h3>
+                    <p>Ready to guide and support students</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Student Survey Form -->
+        <form id="studentForm" class="survey-form">
+            <button type="button" class="submit-btn back-btn" onclick="goBack()">← Back to Role Selection</button>
+            
+            <div class="form-section">
+                <h3>Personal Information</h3>
+                <div class="form-group">
+                    <label for="studentName">Full Name *</label>
+                    <input type="text" id="studentName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="studentEmail">Email Address *</label>
+                    <input type="email" id="studentEmail" required placeholder="your.email@sjsu.edu">
+                </div>
+                <div class="form-group">
+                    <label for="studentMajor">Major *</label>
+                    <select id="studentMajor" required>
+                        <option value="">Select your major</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Software Engineering">Software Engineering</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Computer Engineering">Computer Engineering</option>
+                        <option value="Business Administration">Business Administration</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Psychology">Psychology</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="studentYear">Current Year *</label>
+                    <select id="studentYear" required>
+                        <option value="">Select your year</option>
+                        <option value="Freshman">Freshman</option>
+                        <option value="Sophomore">Sophomore</option>
+                        <option value="Junior">Junior</option>
+                        <option value="Senior">Senior</option>
+                        <option value="Graduate">Graduate Student</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Your Passion</h3>
+                <div class="form-group">
+                    <label for="studentPassion">Describe your passion and interests: *</label>
+                    <textarea id="studentPassion" required placeholder="What drives you? What topics, causes, or fields excite you? Example: I'm passionate about using technology to solve environmental problems..."></textarea>
+                    <small style="color: #666; font-size: 0.9rem; margin-top: 5px; display: block;">This helps us match you with mentors who share your interests.</small>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Mentorship Preferences</h3>
+                <div class="form-group">
+                    <label for="mentorStyle">Preferred mentorship style:</label>
+                    <select id="mentorStyle">
+                        <option value="">Select preference</option>
+                        <option value="Hands-on/Structured">Hands-on/Structured</option>
+                        <option value="Flexible/Guidance-based">Flexible/Guidance-based</option>
+                        <option value="Goal-oriented">Goal-oriented</option>
+                        <option value="Open to any">Open to any</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="meetingPreference">Preferred meeting frequency:</label>
+                    <select id="meetingPreference">
+                        <option value="">Select preference</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Bi-weekly">Bi-weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="As needed">As needed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Availability (optional - select days you're available):</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Monday"> Monday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Tuesday"> Tuesday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Wednesday"> Wednesday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Thursday"> Thursday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Friday"> Friday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Saturday"> Saturday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Sunday"> Sunday
+                        </label>
+                    </div>
+                    <small style="color: #666; font-size: 0.9rem; margin-top: 5px; display: block;">Select days that work best for your schedule.</small>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Additional Information</h3>
+                <div class="form-group">
+                    <label for="studentChallenges">What challenges are you currently facing?</label>
+                    <textarea id="studentChallenges" placeholder="Share any challenges or concerns..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="studentGoals">What do you hope to achieve through mentorship?</label>
+                    <textarea id="studentGoals" placeholder="Describe your goals..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-error hidden" role="alert"></div>
+            <button type="submit" class="submit-btn">Submit Survey</button>
+        </form>
+
+        <!-- Mentor Survey Form -->
+        <form id="mentorForm" class="survey-form">
+            <button type="button" class="submit-btn back-btn" onclick="goBack()">← Back to Role Selection</button>
+            
+            <div class="form-section">
+                <h3>Personal Information</h3>
+                <div class="form-group">
+                    <label for="mentorName">Full Name *</label>
+                    <input type="text" id="mentorName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="mentorEmail">Email Address *</label>
+                    <input type="email" id="mentorEmail" required placeholder="your.email@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="mentorTitle">Current Job Title *</label>
+                    <input type="text" id="mentorTitle" required placeholder="e.g., Senior Software Engineer">
+                </div>
+                <div class="form-group">
+                    <label for="mentorCompany">Company/Organization *</label>
+                    <input type="text" id="mentorCompany" required placeholder="Enter company name">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Professional Background</h3>
+                <div class="form-group">
+                    <label for="mentorField">Primary Field/Industry *</label>
+                    <select id="mentorField" required>
+                        <option value="">Select your field</option>
+                        <option value="Tech/Software">Tech/Software</option>
+                        <option value="Finance/Banking">Finance/Banking</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Education">Education</option>
+                        <option value="Consulting">Consulting</option>
+                        <option value="Government">Government</option>
+                        <option value="Non-Profit">Non-Profit</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="yearsExperience">Years of Experience *</label>
+                    <select id="yearsExperience" required>
+                        <option value="">Select years of experience</option>
+                        <option value="1-3 years">1-3 years</option>
+                        <option value="4-7 years">4-7 years</option>
+                        <option value="8-15 years">8-15 years</option>
+                        <option value="15+ years">15+ years</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Areas of Expertise (Select all that apply) *</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="expertise" value="Software Development"> Software Development
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="expertise" value="Data Science & Analytics"> Data Science & Analytics
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="expertise" value="Product Management"> Product Management
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="expertise" value="Entrepreneurship"> Entrepreneurship
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="expertise" value="Research & Academia"> Research & Academia
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="expertise" value="Leadership & Management"> Leadership & Management
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="expertise" value="Career Development"> Career Development
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="expertise" value="Graduate School Applications"> Graduate School Applications
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="mentorBio">Brief professional bio:</label>
+                    <textarea id="mentorBio" placeholder="Share your professional journey..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Educational Background</h3>
+                <div class="form-group">
+                    <label for="mentorDegree">Highest Degree *</label>
+                    <select id="mentorDegree" required>
+                        <option value="">Select your degree</option>
+                        <option value="Bachelor's">Bachelor's</option>
+                        <option value="Master's">Master's</option>
+                        <option value="PhD">PhD</option>
+                        <option value="Professional Degree">Professional Degree (MD, JD, etc.)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mentorAlmaMater">Alma Mater (University)</label>
+                    <input type="text" id="mentorAlmaMater" placeholder="University name">
+                </div>
+                <div class="form-group">
+                    <label>Are you an SJSU Alumnus? *</label>
+                    <div class="rating-group" id="sjsuAlumnus">
+                        <label class="rating-label">
+                            <input type="radio" name="sjsuAlumnus" value="Yes">
+                            Yes
+                        </label>
+                        <label class="rating-label">
+                            <input type="radio" name="sjsuAlumnus" value="No">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Mentorship Capabilities</h3>
+                <div class="form-group">
+                    <label>What can you help students with? (Select all that apply) *</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="helpWith" value="Career Guidance"> Career Guidance
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="helpWith" value="Technical Skills"> Technical Skills
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="helpWith" value="Networking"> Networking
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="helpWith" value="Research Opportunities"> Research Opportunities
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="helpWith" value="Graduate School Advice"> Graduate School Advice
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="helpWith" value="Industry Connections"> Industry Connections
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="helpWith" value="Interview Preparation"> Interview Preparation
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="helpWith" value="Resume Review"> Resume Review
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="menteeCount">Number of mentees you can take:</label>
+                    <select id="menteeCount">
+                        <option value="">Select capacity</option>
+                        <option value="1">1 student</option>
+                        <option value="2">2 students</option>
+                        <option value="3-5">3-5 students</option>
+                        <option value="5+">5+ students</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="meetingAvailability">Meeting frequency:</label>
+                    <select id="meetingAvailability">
+                        <option value="">Select availability</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Bi-weekly">Bi-weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="As needed">As needed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Available days (optional - select days you're available):</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Monday"> Monday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Tuesday"> Tuesday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Wednesday"> Wednesday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Thursday"> Thursday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Friday"> Friday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Saturday"> Saturday
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="availableDays" value="Sunday"> Sunday
+                        </label>
+                    </div>
+                    <small style="color: #666; font-size: 0.9rem; margin-top: 5px; display: block;">Select days that work best for your schedule.</small>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Mentoring Style & Preferences</h3>
+                <div class="form-group">
+                    <label for="mentorshipStyle">Your mentorship style:</label>
+                    <select id="mentorshipStyle">
+                        <option value="">Select style</option>
+                        <option value="Hands-on/Structured">Hands-on/Structured</option>
+                        <option value="Flexible/Guidance-based">Flexible/Guidance-based</option>
+                        <option value="Goal-oriented">Goal-oriented</option>
+                        <option value="Adaptable to student needs">Adaptable to student needs</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Preferred student majors (Select all that apply)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="preferredMajor" value="Computer Science"> Computer Science
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="preferredMajor" value="Software Engineering"> Software Engineering
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="preferredMajor" value="Data Science"> Data Science
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="preferredMajor" value="Computer Engineering"> Computer Engineering
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="preferredMajor" value="Business Administration"> Business Administration
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="preferredMajor" value="Engineering"> Engineering (Other)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="preferredMajor" value="Any"> Open to All Majors
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="mentorMotivation">Why do you want to be a mentor?</label>
+                    <textarea id="mentorMotivation" placeholder="Share your motivation..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Additional Information</h3>
+                <div class="form-group">
+                    <label for="mentorAchievements">Notable achievements or recognitions:</label>
+                    <textarea id="mentorAchievements" placeholder="Awards, publications, projects..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="mentorAdditional">Anything else you'd like students to know?</label>
+                    <textarea id="mentorAdditional" placeholder="Additional information..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-error hidden" role="alert"></div>
+            <button type="submit" class="submit-btn">Register as Mentor</button>
+        </form>
+
+        <!-- Success Message for Students -->
+        <div id="studentSuccess" class="success-message hidden">
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <h2>Survey Submitted Successfully!</h2>
+            <p style="margin-bottom: 20px; color: #666;">Thank you for completing the survey. Our team will review your information and match you with a suitable mentor soon.</p>
+            <div class="nav-buttons">
+                <button class="btn-primary" onclick="goBack()">Submit Another Response</button>
+            </div>
+        </div>
+
+        <!-- Success Message for Mentors -->
+        <div id="mentorSuccess" class="success-message hidden">
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <h2>Thank You for Registering!</h2>
+            <p style="margin-bottom: 20px; color: #666;">We'll connect you with students who match your expertise.</p>
+            <div class="nav-buttons">
+                <button class="btn-secondary" onclick="goBack()">Register Another Mentor</button>
+                <button class="btn-primary" onclick="viewAllMentors()">View All Mentors</button>
+            </div>
+        </div>
+
+        <!-- Public mentor directory (no emails shown) -->
+        <div id="matchesContainer" class="matches-container" style="display: none;">
+            <button class="submit-btn back-btn" onclick="backToSuccess()">← Back</button>
+            <h2 style="color: var(--sjsu-blue); margin-bottom: 20px;">Registered Mentors</h2>
+            <div id="matchesList"></div>
+            <div class="nav-buttons">
+                <button class="btn-secondary" onclick="goBack()">Start Over</button>
+            </div>
+        </div>
+
+        <footer class="site-footer">
+            Hackathon prototype · not an official San José State University service
+            <span id="modeBadge" class="mode-badge"></span>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="matching-algorithm.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
